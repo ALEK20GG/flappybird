@@ -1,12 +1,47 @@
 <script lang="ts">
-  export let x = 100; // percentuale iniziale da destra
-  let h1 = Math.floor(Math.random() * 41) + 10;
-  let h2 = 60 - h1;
+  export let pipe: { x: number; top: number; bottom: number };
 </script>
 
-<div class="absolute top-0" style="left: {x}%; width: 10%; height: 100%;">
-  <div class="h-full flex flex-col justify-between">
-    <img src="/img/tubo.png" alt="tubo" class="w-full h-[{h1}%]" />
-    <img src="/img/tubo_180.png" alt="tubo" style="%;" class="w-full h-[{h2}%]" />
+<style>
+  .tubo-wrapper {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 10vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+  .tubo-section {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+  }
+  .tubo-section img {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: auto;
+  }
+  .tubo-section.top {
+    height: var(--top-height);
+  }
+  .tubo-section.bottom {
+    height: var(--bottom-height);
+    display: flex;
+    align-items: flex-end;
+  }
+</style>
+
+<div
+  class="tubo-wrapper"
+  style="left: {pipe.x}%; --top-height: {pipe.top}%; --bottom-height: {pipe.bottom}%;"
+>
+  <div class="tubo-section top">
+    <img src="/img/tubo_180.png" alt="tubo superiore" />
+  </div>
+  <div class="tubo-section bottom">
+    <img src="/img/tubo.png" alt="tubo inferiore" />
   </div>
 </div>
