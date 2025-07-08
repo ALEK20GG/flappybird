@@ -1,20 +1,64 @@
 <script>
   import Button from "./Button.svelte";
+
+  // Numero di nuvole
+  const cloudCount = (Math.random() * 10)+1;
+
+  // Array di nuvole con posizioni e velocità random
+  const clouds = Array.from({ length: cloudCount }, () => ({
+    top: Math.random() * 80 + 10, // top in %, tra 10% e 90%
+    duration: 8 + Math.random() * 6, // durata animazione tra 8s e 14s
+    delay: Math.random() * -14, // delay negativo per animazioni sfalsate
+  }));
 </script>
 
-<div class="bg-blue-200">
-<div class="coin-animation scale-[3] fixed top-4 right-4"></div>
-<div class="font-pixelify text-white text-3xl text-border">COINS:</div>
-  <div class="w-[50%] mx-auto flex flex-col items-center justify-center min-h-screen bg-blue-400">
-  <h1 class="text-8xl font-bold font-pixelify text-yellow-300 mb-15 drop-shadow-lg" style="font-family: ">Flappy Bird</h1>
+<div class="relative bg-blue-400 overflow-hidden min-h-screen">
 
-  <Button>Gioca</Button>
-  <Button>Skin</Button>
-  <Button>Store</Button>
+  {#each clouds as cloud (cloud)}
+    <img
+      src="Cloud-2.png"
+      alt="Nuvola"
+      class="animated-img scale-[2]"
+      style="
+        top: {cloud.top}%;
+        animation-duration: {cloud.duration}s;
+        animation-delay: {cloud.delay}s;
+      "
+    />
+  {/each}
 
-</div>
+  <!-- Overlay UI -->
+  <div class="fixed top-[3%] left-[1%] flex items-center space-x-7 p-2 z-20">
+    <div class="font-pixelify text-white text-3xl text-border">COINS: 0</div>
+    <div class="coin-animation scale-[3]"></div>
+  </div>
+
+  <div class="w-[50%] mx-auto flex flex-col items-center justify-center min-h-screen z-20">
+    <h1 class="text-3xl text-border font-pixelify text-white fixed top-[5%]">Max Score: 0</h1>
+    <h1 class="text-8xl font-bold font-pixelify text-yellow-300 mb-[5%] text-shadow-lg/200">Flappy Bird</h1>
+
+    <Button>Play</Button>
+    <Button>Skin</Button>
+    <Button><a href="./store">Store</a></Button>
+  </div>
 </div>
 
 <style>
+  .animated-img {
+    position: absolute;
+    left: 0;
+    transform: translateY(-50%);
+    animation-name: slideRight;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
 
+  @keyframes slideRight {
+    0% {
+      left: -110px;
+    }
+    100% {
+      left: 110vw;
+    }
+  }
 </style>
