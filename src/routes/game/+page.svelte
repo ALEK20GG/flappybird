@@ -6,7 +6,13 @@
   let gameOver = false;
   let birdY = 50; // centro verticale
   let birdVelocity = 0;
-  const gravity = 0.5;
+  const birdX = 20; // percentuale orizzontale dove si trova l'uccello
+  const birdHeight = 8; // larghezza stimata dell’uccello in percentuale
+
+  let container:HTMLButtonElement
+  let bird:HTMLDivElement
+
+  const gravity = 0.60;
   const jumpForce = -4;
   let score = 0;
 
@@ -25,9 +31,9 @@
     // genera 3 tubi distanziati
     pipes = [];
     for (let i = 0; i < 3; i++) {
-      const top = Math.floor(Math.random() * 30) + 10;
-      const bottom = 100 - top - 20; // gap 20%
-      pipes.push({ x: 100 + i * 50, top, bottom });
+      const top = Math.floor(Math.random() * 40) + 10;
+      const bottom = 100 - top - 40; // gap 20%
+      pipes.push({ x: 100 + i * 41, top, bottom });
     }
 
     interval = setInterval(() => {
@@ -35,27 +41,41 @@
       birdY += birdVelocity;
 
       // muovi e ricicla i tubi
-      pipes = pipes.map(pipe => {
+      pipes = pipes.map((pipe, index) => {
         let newX = pipe.x - 1;
         if (newX < -10) {
-          // ricrea il tubo in fondo con nuove altezze
-          const top = Math.floor(Math.random() * 30) + 10;
-          const bottom = 100 - top - 20;
+          const lastPipeX = Math.max(...pipes.map(p => p.x));
+          const spacing = 50; // distanza orizzontale tra i tubi in percentuale
+          const top = Math.floor(Math.random() * 40) + 10;
+          const bottom = 100 - top - 40;
           score++;
-          return { x: 140, top, bottom };
+          return { x: lastPipeX + spacing, top, bottom };
         }
         return { ...pipe, x: newX };
       });
 
+
       // collisione con tubi
-      for (const pipe of pipes) {
-        if (pipe.x < 23 && pipe.x > 17) {
-          // siamo all'incirca in corrispondenza dell'uccello
-          if (birdY < pipe.top || birdY > 100 - pipe.bottom) {
-            endGame();
-          }
+    for (const pipe of pipes) {
+      let container_width = container.getBoundingClientRect().width;
+      let width = bird.getBoundingClientRect().width
+      let width_percentage = (width * 100)/container_width;
+      const pipeWidth = 10; // anche i tubi sono larghi 10%
+      const birdLeft = birdX;
+      const birdRight = birdX + width_percentage;
+
+      const pipeLeft = pipe.x;
+      const pipeRight = pipe.x + pipeWidth;
+
+      const overlapsHorizontally = birdRight >= pipeLeft && birdLeft <= pipeRight;
+
+      if (overlapsHorizontally) {
+        if (birdY <= pipe.top || birdY + birdHeight >= pipe.top + 40) {
+          endGame();
         }
       }
+    }
+
 
       // fuori schermo
       if (birdY > 100 || birdY < 0) {
@@ -80,24 +100,37 @@
   }
 
   onMount(() => {
-    window.addEventListener('keydown', e => {
-      if (e.code === 'Space') {
-        flap();
-      }
-    });
-    return () => window.removeEventListener('keydown', flap);
-  });
+  const handleKey = (e: KeyboardEvent) => {
+    if (e.code === 'Space') {
+      flap();
+    }
+  };
+  window.addEventListener('keydown', handleKey);
+  return () => window.removeEventListener('keydown', handleKey);
+});
+
 </script>
 
-<button class="w-full h-full relative hover:cursor-pointer bg-sky-300 overflow-hidden" onclick={flap}>
-  <div class="absolute top-[1%] bottom-[5%] text-[100%] text-white text-shadow-lg/200 font-bold left-[1%]">Score: {score}</div>
-  <div class="absolute left-[20%] h-[10%] aspect-square" style="top: {birdY}%;">
-    <img alt="flappy bird" src="/img/uccellazzo.png" class="w-full h-full object-contain">
+<button bind:this={container} class="w-full h-full relative hover:cursor-pointer bg-sky-300 overflow-hidden" onclick={flap}>
+  <div class="absolute top-[1%] bottom-[5%] text-[100%] text-white text-shadow-lg/200 font-bold left-[49%]">Score: {score}</div>
+  <div
+    bind:this={bird}
+    class="absolute transition-all duration-[30ms] w-fit"
+    style="top: {birdY}%; left: {birdX}%; height: {birdHeight}%"
+  >
+    <img
+      alt="flappy bird"
+      src="/img/uccellazzo.png"
+      class="w-full h-full object-contain"
+    />
   </div>
+
   {#each pipes as pipe (pipe.x)}
     <Tubo {pipe} />
   {/each}
   {#if gameOver}
-    <div class="absolute top-[40%] left-[40%] text-[300%] text-red-500 font-bold">GAME OVER</div>
+    <div class="absolute top-[40%] left-[50%] translate-x-[-50%] 2xl:text-6xl xl:text-5xl lg:text-4xl text-lg text-red-500 font-extrabold drop-shadow-md text-center">
+      GAME OVER
+    </div>
   {/if}
 </button>
