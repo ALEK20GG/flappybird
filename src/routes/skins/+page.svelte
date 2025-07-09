@@ -18,7 +18,7 @@
     </div>
     <div class="w-[50%] mx-auto flex flex-col items-center justify-center min-h-screen">
       <h1 class="fixed top-[5%] text-8xl font-bold font-pixelify text-yellow-300 mb-[5%] text-shadow-lg/200 hover:scale-[120%] transition-transform duration-300 ease-in-out">
-        Store
+        Skins
       </h1>
     </div>
   </div>

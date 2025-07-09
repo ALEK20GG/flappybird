@@ -1,5 +1,9 @@
 <script>
-  import Button from "./Button.svelte";
+  import Button from "$lib/Button.svelte";
+  import { goto } from "$app/navigation"
+  import { onMount } from "svelte";
+  import { cubicOut } from 'svelte/easing';
+  import { fly } from 'svelte/transition';
 
   // Numero di nuvole
   const cloudCount = (Math.random() * 10)+1;
@@ -10,38 +14,62 @@
     duration: 8 + Math.random() * 6, // durata animazione tra 8s e 14s
     delay: Math.random() * -14, // delay negativo per animazioni sfalsate
   }));
+
+  let loaded = false;
+  let transitioning = false;
+
+  onMount(() => {
+    loaded = true;
+  });
+
+  function goToStore() {
+    transitioning = true;
+    setTimeout(() => {
+      goto('/store');
+    }, 900);
+  }
+  function goToSkins() {
+    transitioning = true;
+    setTimeout(() => {
+      goto('/skins');
+    }, 900);
+  }
 </script>
 
-<div class="relative bg-blue-400 overflow-hidden min-h-screen">
+{#if loaded}
+  <div transition:fly={{ y: 50, duration: 500, easing: cubicOut }}>
+    <div class="relative overflow-hidden min-h-screen transition-transform duration-900 ease-in-out" class:translate-y-full={transitioning}>
 
-  {#each clouds as cloud (cloud)}
-    <img
-      src="Cloud-2.png"
-      alt="Nuvola"
-      class="animated-img scale-[2]"
-      style="
-        top: {cloud.top}%;
-        animation-duration: {cloud.duration}s;
-        animation-delay: {cloud.delay}s;
-      "
-    />
-  {/each}
+      {#each clouds as cloud (cloud)}
+        <img
+          src="Cloud-2.png"
+          alt="Nuvola"
+          class="animated-img scale-[2] z-0"
+          style="
+            top: {cloud.top}%;
+            animation-duration: {cloud.duration}s;
+            animation-delay: {cloud.delay}s;
+          "
+        />
+      {/each}
 
-  <!-- Overlay UI -->
-  <div class="fixed top-[3%] left-[1%] flex items-center space-x-7 p-2 z-20">
-    <div class="font-pixelify text-white text-3xl text-border">COINS: 0</div>
-    <div class="coin-animation scale-[3]"></div>
-  </div>
+      <!-- Overlay UI -->
+      <div class="fixed top-[3%] left-[1%] flex items-center space-x-7 p-2">
+        <div class="font-pixelify text-white text-3xl text-border">COINS: 1000</div>
+        <div class="coin-animation scale-[3]"></div>
+      </div>
 
-  <div class="w-[50%] mx-auto flex flex-col items-center justify-center min-h-screen z-20">
-    <h1 class="text-3xl text-border font-pixelify text-white fixed top-[5%]">Max Score: 0</h1>
-    <h1 class="text-8xl font-bold font-pixelify text-yellow-300 mb-[5%] text-shadow-lg/200">Flappy Bird</h1>
+      <div class="w-[50%] mx-auto flex flex-col items-center justify-center min-h-screen">
+        <h1 class="text-3xl text-border font-pixelify text-white fixed top-[5%]">Max Score: 0</h1>
+        <h1 class="text-8xl font-bold font-pixelify text-yellow-300 mb-[5%] text-shadow-lg/200 hover:scale-[120%] transition-transform duration-300 ease-in-out">Flappy Bird</h1>
 
-    <Button>Play</Button>
-    <Button>Skin</Button>
-    <Button><a href="./store">Store</a></Button>
-  </div>
-</div>
+        <Button>Play</Button>
+        <Button onclick={goToSkins}>Skins</Button>
+        <Button onclick={goToStore}>Store</Button>
+      </div>
+    </div>
+  </div>  
+{/if}
 
 <style>
   .animated-img {
