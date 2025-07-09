@@ -6,7 +6,7 @@
   let gameOver = false;
   let birdY = 50; // centro verticale
   let birdVelocity = 0;
-  const gravity = 0.75;
+  const gravity = 0.5;
   const jumpForce = -4;
   let score = 0;
 
@@ -89,49 +89,15 @@
   });
 </script>
 
-<style>
-  .game {
-    width: 100vw;
-    height: 100vh;
-    background: skyblue;
-    overflow: hidden;
-    position: relative;
-    cursor: pointer;
-  }
-  .bird {
-    position: absolute;
-    width: 40px;
-    height: 40px;
-    left: 20%;
-    background: url('/img/uccellazzo.png') no-repeat center/contain;
-  }
-  .score {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    font-size: 2em;
-    color: white;
-    text-shadow: 1px 1px 2px black;
-    font-weight: bold;
-  }
-  .center-message {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 2.5em;
-    color: red;
-    font-weight: bold;
-  }
-</style>
-
-<div class="game" on:click={flap}>
-  <div class="score">Score: {score}</div>
-  <div class="bird" style="top: {birdY}%;"></div>
+<button class="w-full h-full relative hover:cursor-pointer bg-sky-300 overflow-hidden" onclick={flap}>
+  <div class="absolute top-[1%] bottom-[5%] text-[100%] text-white text-shadow-lg/200 font-bold left-[1%]">Score: {score}</div>
+  <div class="absolute left-[20%] h-[10%] aspect-square" style="top: {birdY}%;">
+    <img alt="flappy bird" src="/img/uccellazzo.png" class="w-full h-full object-contain">
+  </div>
   {#each pipes as pipe (pipe.x)}
     <Tubo {pipe} />
   {/each}
   {#if gameOver}
-    <div class="center-message">GAME OVER</div>
+    <div class="absolute top-[40%] left-[40%] text-[300%] text-red-500 font-bold">GAME OVER</div>
   {/if}
-</div>
+</button>
