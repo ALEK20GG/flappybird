@@ -1,5 +1,7 @@
 <script lang="ts">
   export let pipe: { x: number; top: number; bottom: number };
+  export let hitboxShown: boolean = false;
+  export let rnd = false;
 </script>
 
 <div
@@ -7,7 +9,7 @@
   style="left: {pipe.x}%;"
 >
   <!-- TUBO SUPERIORE (rovesciato) -->
-  <div class="w-full relative flex flex-col" style="height: {pipe.top}%;">
+  <div class="w-full relative flex flex-col {hitboxShown ? "bg-blue-500" : ""}" style="height: {pipe.top}%;">
     <img
       src="/img/tubo_180.png"
       alt="tubo superiore"
@@ -21,9 +23,16 @@
       style="height: {5 / pipe.top * 100}%;"
     />
   </div>
-
+  {#if rnd == true}
+    <img 
+      src="/coin.gif" 
+      alt="moneta" 
+      class="scale-[35%]"
+    >
+  {/if}
+  
   <!-- TUBO INFERIORE -->
-  <div class="w-full relative flex flex-col" style="height: {pipe.bottom}%;"> 
+  <div class="w-full relative flex flex-col {hitboxShown ? "bg-blue-500" : ""}" style="height: {pipe.bottom}%;"> 
     <img 
       src="/img/tappo.png" 
       alt="tappo sotto"

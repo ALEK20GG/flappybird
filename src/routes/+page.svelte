@@ -63,7 +63,7 @@
         <h1 class="text-3xl text-border font-pixelify text-white fixed top-[5%]">Max Score: 0</h1>
         <h1 class="text-8xl font-bold font-pixelify text-yellow-300 mb-[5%] text-shadow-lg/200 hover:scale-[120%] transition-transform duration-300 ease-in-out">Flappy Bird</h1>
 
-        <Button>Play</Button>
+        <Button><a href="/game">Play</a></Button>
         <Button onclick={goToSkins}>Skins</Button>
         <Button onclick={goToStore}>Store</Button>
       </div>
