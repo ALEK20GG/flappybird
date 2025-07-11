@@ -1,6 +1,10 @@
 <script lang="ts">
+  import Button from '$lib/Button.svelte';
   import { onMount } from 'svelte';
+  import { goto } from "$app/navigation";
   import Tubo from '$lib/Tubo.svelte';
+  import { cubicOut } from 'svelte/easing';
+  import { fly } from 'svelte/transition';
 
   let gameStarted = false;
   let gameOver = false;
@@ -20,6 +24,21 @@
   type Pipe = { x: number; top: number; bottom: number };
   let pipes: Pipe[] = [];
   let interval: any;
+
+  let loaded = false;
+  let transitioning = false;
+
+  function goToMenu() {
+    transitioning = true;
+    setTimeout(() => {
+      goto('/');
+    }, 900);
+  }
+
+  function handleGoToMenu(event: MouseEvent) {
+    event.stopPropagation();
+    goToMenu();
+  }
 
   function startGame() {
     birdY = 50;
@@ -100,6 +119,7 @@
   }
 
   onMount(() => {
+  loaded = true;
   const handleKey = (e: KeyboardEvent) => {
     if (e.code === 'Space') {
       flap();
@@ -111,26 +131,32 @@
 
 </script>
 
-<button bind:this={container} class="w-full h-full relative hover:cursor-pointer bg-sky-300 overflow-hidden" onclick={flap}>
-  <div class="absolute top-[1%] bottom-[5%] text-[100%] text-white text-shadow-lg/200 font-bold left-[49%]">Score: {score}</div>
-  <div
-    bind:this={bird}
-    class="absolute transition-all duration-[30ms] w-fit"
-    style="top: {birdY}%; left: {birdX}%; height: {birdHeight}%"
-  >
-    <img
-      alt="flappy bird"
-      src="/img/uccellazzo.png"
-      class="w-full h-full object-contain"
-    />
-  </div>
+{#if loaded == true}
+      <button bind:this={container} class="w-full h-full relative hover:cursor-pointer overflow-hidden min-h-screen transition-discrete transition-transform duration-900 ease-in-out" onclick={flap} transition:fly={{ y: 50, duration: 500, easing: cubicOut }} class:translate-y-full={transitioning}>
+        <div class="absolute top-[1%] bottom-[5%] text-[100%] text-white text-shadow-lg/200 font-bold left-[49%] ">Score: {score}</div>
+        <div
+          bind:this={bird}
+          class="absolute transition-all duration-[30ms] w-fit"
+          style="top: {birdY}%; left: {birdX}%; height: {birdHeight}%"
+        >
+          <img
+            alt="flappy bird"
+            src="/birds/flappy.png"
+            class="w-full h-full object-contain"
+          />
+        </div>
 
-  {#each pipes as pipe (pipe.x)}
-    <Tubo {pipe} />
-  {/each}
-  {#if gameOver}
-    <div class="absolute top-[40%] left-[50%] translate-x-[-50%] 2xl:text-6xl xl:text-5xl lg:text-4xl text-lg text-red-500 font-extrabold drop-shadow-md text-center">
-      GAME OVER
-    </div>
-  {/if}
-</button>
+        {#each pipes as pipe (pipe.x)}
+          <Tubo {pipe} />
+        {/each}
+        {#if gameOver}
+          <div class="w-[70%] h-[30%] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center space-y-8 text-center">
+            <div class="2xl:text-6xl xl:text-5xl lg:text-4xl text-lg text-red-500 font-bold font-pixelify text-shadow-lg/200">
+              GAME OVER
+            </div>
+            <Button onclick={handleGoToMenu}>Return to menu</Button>
+          </div>
+        {/if}
+      </button>
+{/if}
+
