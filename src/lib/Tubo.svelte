@@ -2,6 +2,7 @@
   export let pipe: { x: number; top: number; bottom: number };
   export let hitboxShown: boolean = false;
   export let rnd = false;
+  export let coin_collected = false;
 </script>
 
 <div
@@ -24,11 +25,13 @@
     />
   </div>
   {#if rnd == true}
-    <img 
+    {#if !coin_collected}
+          <img 
       src="/coin.gif" 
       alt="moneta" 
-      class="scale-[35%]"
+      class="scale-[35%] {hitboxShown ? "bg-yellow-500" : ""}"
     >
+    {/if}
   {/if}
   
   <!-- TUBO INFERIORE -->
