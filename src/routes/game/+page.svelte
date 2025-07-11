@@ -1,7 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import Tubo from '$lib/Tubo.svelte';
-  import Settings from '$lib/Settings.svelte'
+  import Settings from '$lib/Settings.svelte';
+  import { coins } from '../../stores/game';
 
   let gameStarted = false;
   let gameOver = false;
@@ -11,7 +12,6 @@
   let show_settings = false;
   const birdX = 20; // percentuale orizzontale dove si trova l'uccello
   const birdHeight = 8; // larghezza stimata dell’uccello in percentuale
-  let coins = 0;
 
   //suoni
   let coin_volume = 0.3;
@@ -95,7 +95,7 @@
         birdY <= pipe.top + 25 // range verticale del centro del gap
       ) {
         pipe.coin_collected = true;
-        coins++;
+        coins.update(n => n +1);
         playEffect('coin');
       }
 
@@ -204,7 +204,7 @@
 
 <!-- Monete -->
 <div class="fixed top-[3%] left-[1%] flex items-center space-x-7 p-2 z-40">
-  <div class="font-pixelify text-white text-3xl text-border">COINS: {coins}</div>
+  <div class="font-pixelify text-white text-3xl text-border">COINS: {$coins}</div>
   <div class="coin-animation scale-[3]"></div>
 </div>
 
