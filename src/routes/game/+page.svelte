@@ -14,7 +14,6 @@
   let birdVelocity = 0;
   let hitbox_shown = false;
   let show_settings = false;
-  let actual_background = $background_in_use[0];
   let bg_counter = 0;
   const birdX = 20; // percentuale orizzontale dove si trova l'uccello
   const birdHeight = 8; // larghezza stimata dell’uccello in percentuale
@@ -82,14 +81,15 @@
           const bottom = 100 - top - 40;
           const hasCoin = Math.random() < 1 / 3; // 33.3%
           score++;
-          if(bg_counter > $background_in_use.length)
-          {
-            bg_counter=0;
-          }
-          if(score%20==0)
+          if(score%15==0)
           {
             bg_counter++;
           }
+          if(bg_counter >= $background_in_use.length)
+          {
+            bg_counter=0;
+          }
+          
           return { x: lastPipeX + spacing, top, bottom, hasCoin, coin_collected: false };
         }
         return { ...pipe, x: newX };
