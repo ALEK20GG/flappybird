@@ -11,4 +11,7 @@ export const background_in_use = writable<string[]>([
     "/standard/origbig.png",
     "/standard/sfdgh.png",
     "/standard/tsrh.png",
-]) // background base
+]); // background base
+export const owned_skins = writable<string[]>([
+    "/flappy.png"
+]);
