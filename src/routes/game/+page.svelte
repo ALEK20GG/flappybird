@@ -81,7 +81,7 @@
           const bottom = 100 - top - 40;
           const hasCoin = Math.random() < 1 / 3; // 33.3%
           score++;
-          if(score%1==0)
+          if(score%15==0)
           {
             bg_counter++;
           }
@@ -208,7 +208,7 @@
   transition:fly={{ y: 50, duration: 500, easing: cubicOut }}
   class:translate-y-full={transitioning}
 >
-  <div class="w-full h-full" style="background-image: url(/bg{$background_in_use[bg_counter]}); background-size: cover; background-position: center; -webkit-transition: background-image 0.2s ease-in-out; transition: background-image 0.2s ease-in-out;">
+  <div class="w-full h-full" style="background-image: url(/bg/{$background_in_use[bg_counter]}); background-size: cover; background-position: center; -webkit-transition: background-image 0.2s ease-in-out; transition: background-image 0.2s ease-in-out;">
     <!-- Uccello -->
     <div
       bind:this={bird}
@@ -217,7 +217,7 @@
     >
       <img
         alt="flappy bird"
-        src="/birds{$skin_in_use}"
+        src="/birds/{$skin_in_use}"
         class="w-full h-full object-contain"
       />
     </div>
