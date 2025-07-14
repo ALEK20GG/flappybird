@@ -201,12 +201,13 @@
 <!--{#if loaded == true}-->
 <button
   bind:this={container}
-  class="w-full h-full relative hover:cursor-pointer overflow-hidden"
+  class="w-full h-full relative hover:cursor-pointer overflow-hidden min-h-screen transition-transform duration-900 ease-in-out"
   style="background-image: url(/bg{$background_in_use[bg_counter]}); background-size: cover"
   on:click={() => {
     if (!show_settings) flap();
   }}
-  
+  transition:fly={{ y: 50, duration: 500, easing: cubicOut }}
+  class:translate-y-full={transitioning}
 >
   <!-- Uccello -->
   <div
