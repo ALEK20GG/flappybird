@@ -6,7 +6,6 @@
   import { fly } from 'svelte/transition';
   import { coins, max_score, skin_in_use, background_in_use, settings } from '../stores/localstorage';
 
-
   // Numero di nuvole
   const cloudCount = (Math.random() * 10)+1;
 

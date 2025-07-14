@@ -40,7 +40,7 @@
 
   const bgs = [
     { packPath: "/bg/pack_city", img: "bg/pack_city/10.png", price: 60 },
-    { packPath: "/bg/c<pack_louds", img: "bg/pack_clouds/dfsvc.png", price: 40 },
+    { packPath: "/bg/pack_clouds", img: "bg/pack_clouds/dfsvc.png", price: 40 },
     { packPath: "/bg/pack_nature", img: "bg/pack_nature/ersv.png", price: 15 },
     { packPath: "/bg/pack_night", img: "bg/pack_night/adesr.png", price: 25 }
   ]
@@ -69,7 +69,7 @@
       <h2 class="h-fit mb-[0%] text-5xl font-bold font-pixelify text-yellow-300 text-shadow-lg/200">
         Skins
       </h2>
-      <Splide aria-label="Backgrounds" class="w-[40%] h-[40%]" options={splideOptions}>
+      <Splide aria-label="Skins" class="w-[40%] h-[40%]" options={splideOptions}>
         {#each birds as bird}
           <SplideSlide>
             <div class="relative group w-full h-full">
@@ -88,7 +88,7 @@
       <h2 class="h-fit mb-[2%] text-5xl font-bold font-pixelify text-yellow-300 text-shadow-lg/200">
         Backgrounds
       </h2>
-      <Splide aria-label="Skin" class="w-[40%] h-[40%]" options={splideOptions}>
+      <Splide aria-label="Backgrounds" class="w-[40%] h-[40%]" options={splideOptions}>
         {#each bgs as bg}
           <SplideSlide>
             <div class="relative group w-full h-full">

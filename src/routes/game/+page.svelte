@@ -201,63 +201,63 @@
 <!--{#if loaded == true}-->
 <button
   bind:this={container}
-  class="w-full h-full relative hover:cursor-pointer overflow-hidden"
-  style="background-image: url(/bg/{$background_in_use[bg_counter]}); background-size: cover"
+  class="w-full h-full relative hover:cursor-pointer overflow-hidden min-h-screen transition-transform duration-900 ease-in-out"
   on:click={() => {
     if (!show_settings) flap();
   }}
-  
+  transition:fly={{ y: 50, duration: 500, easing: cubicOut }}
+  class:translate-y-full={transitioning}
 >
-  <!-- Uccello -->
-  <div
-    bind:this={bird}
-    class="absolute transition-all duration-[30ms] w-fit {hitbox_shown ? 'bg-red-500' : ''}"
-    style="top: {birdY}%; left: {birdX}%; height: {birdHeight}%"
-  >
-    <img
-      alt="flappy bird"
-      src="/birds/{$skin_in_use}"
-      class="w-full h-full object-contain"
-    />
-  </div>
-
-  <!-- Tubi -->
-  {#each pipes as pipe (pipe.x)}
-    <Tubo {pipe} hitboxShown={hitbox_shown} rnd={pipe.hasCoin} coin_collected={pipe.coin_collected}/>
-  {/each}
-
-  <!-- Punteggio -->
-  <div class="absolute top-[1%] bottom-[5%] text-[100%] text-white text-shadow-lg/200 font-bold left-[49%]">
-    Score: {score}
-  </div>
-
-  <!-- Game Over -->
-  {#if gameOver}
-    <div class="w-[70%] h-[30%] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center space-y-8 text-center">
-      <div class="2xl:text-6xl xl:text-5xl lg:text-4xl md:text-3xl sm:text-2xl text-red-500 font-bold font-pixelify text-shadow-lg/200">
-        GAME OVER
-      </div>
-      <Button onclick={handleGoToMenu}>Return to menu</Button>
+  <div class="w-full h-full" style="background-image: url(/bg{$background_in_use[bg_counter]}); background-size: cover; background-position: center; -webkit-transition: background-image 0.2s ease-in-out; transition: background-image 0.2s ease-in-out;">
+    <!-- Uccello -->
+    <div
+      bind:this={bird}
+      class="absolute transition-all duration-[30ms] w-fit {hitbox_shown ? 'bg-red-500' : ''}"
+      style="top: {birdY}%; left: {birdX}%; height: {birdHeight}%"
+    >
+      <img
+        alt="flappy bird"
+        src="/birds{$skin_in_use}"
+        class="w-full h-full object-contain"
+      />
     </div>
-  {/if}
-</button>
-<!--{/if}-->
 
+    <!-- Tubi -->
+    {#each pipes as pipe (pipe.x)}
+      <Tubo {pipe} hitboxShown={hitbox_shown} rnd={pipe.hasCoin} coin_collected={pipe.coin_collected}/>
+    {/each}
 
-<!-- Monete -->
-<div class="fixed top-[3%] left-[1%] flex items-center space-x-7 p-2 z-40">
-  <div class="font-pixelify text-white text-3xl text-border">COINS: {$coins}</div>
-  <div class="coin-animation scale-[3]"></div>
-</div>
+    <!-- Punteggio -->
+    <div class="absolute top-[1%] bottom-[5%] text-[100%] text-white text-shadow-lg/200 font-bold left-[49%]">
+      Score: {score}
+    </div>
 
-<!-- Bottone impostazioni con z-50 per renderlo cliccabile -->
-<div class="fixed top-[5%] right-[2%] flex items-center space-x-7 p-2 h-[5%] w-[5%] z-50">
-  <button on:click={go_to_settings} class="bg-white rounded-full shadow-md p-1 hover:scale-105 transition">
-    <img src="/img/impostazioni.png" alt="impostazioni" class="w-full h-full" />
+    <!-- Game Over -->
+    {#if gameOver}
+      <div class="w-[70%] h-[30%] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center space-y-8 text-center">
+        <div class="2xl:text-6xl xl:text-5xl lg:text-4xl md:text-3xl sm:text-2xl text-red-500 font-bold font-pixelify text-shadow-lg/200">
+          GAME OVER
+        </div>
+        <Button onclick={handleGoToMenu}>Return to menu</Button>
+      </div>
+    {/if}
+    </div>
   </button>
-</div>
+  
+  <!-- Monete -->
+  <div class="fixed top-[3%] left-[1%] flex items-center space-x-7 p-2 z-40">
+    <div class="font-pixelify text-white text-3xl text-border">COINS: {$coins}</div>
+    <div class="coin-animation scale-[3]"></div>
+  </div>
 
-<!-- Menu impostazioni -->
-{#if show_settings}
-  <Settings bind:coin_volume bind:jump_volume bind:death_volume bind:show_settings bind:hitbox_shown/>
-{/if}
+  <!-- Bottone impostazioni con z-50 per renderlo cliccabile -->
+  <div class="fixed top-[5%] right-[2%] flex items-center space-x-7 p-2 h-[5%] w-[5%] z-50">
+    <button on:click={go_to_settings} class="bg-white rounded-full shadow-md p-1 hover:scale-105 transition">
+      <img src="/img/impostazioni.png" alt="impostazioni" class="w-full h-full" />
+    </button>
+  </div>
+
+  <!-- Menu impostazioni -->
+  {#if show_settings}
+    <Settings bind:coin_volume bind:jump_volume bind:death_volume bind:show_settings bind:hitbox_shown/>
+  {/if}
