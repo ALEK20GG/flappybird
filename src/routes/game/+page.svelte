@@ -1,6 +1,10 @@
 <script lang="ts">
+  import Button from '$lib/Button.svelte';
   import { onMount } from 'svelte';
+  import { goto } from "$app/navigation";
   import Tubo from '$lib/Tubo.svelte';
+  import { cubicOut } from 'svelte/easing';
+  import { fly } from 'svelte/transition';
   import Settings from '$lib/Settings.svelte';
   import { coins } from '../../stores/game';
 
@@ -29,6 +33,21 @@
   type Pipe = { x: number; top: number; bottom: number; hasCoin: boolean, coin_collected: boolean };
   let pipes: Pipe[] = [];
   let interval: any;
+
+  let loaded = false;
+  let transitioning = false;
+
+  function goToMenu() {
+    transitioning = true;
+    setTimeout(() => {
+      goto('/');
+    }, 900);
+  }
+
+  function handleGoToMenu(event: MouseEvent) {
+    event.stopPropagation();
+    goToMenu();
+  }
 
   function startGame() {
     birdY = 50;
@@ -152,6 +171,7 @@
   }
 
   onMount(() => {
+  loaded = true;
   const handleKey = (e: KeyboardEvent) => {
     if (e.code === 'Space' && !show_settings) {
       flap();
@@ -162,6 +182,8 @@
 });
 
 </script>
+
+<!--{#if loaded == true}-->
 
 <button
   bind:this={container}
@@ -179,7 +201,7 @@
   >
     <img
       alt="flappy bird"
-      src="/birds/bird_cyber.png"
+      src="/birds/flappy.png"
       class="w-full h-full object-contain"
     />
   </div>
@@ -196,11 +218,16 @@
 
   <!-- Game Over -->
   {#if gameOver}
-    <div class="absolute top-[40%] left-[50%] translate-x-[-50%] 2xl:text-6xl xl:text-5xl lg:text-4xl md:text-3xl sm:text-2xl text-red-500 font-extrabold drop-shadow-md text-center">
-      GAME OVER
+    <div class="w-[70%] h-[30%] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center space-y-8 text-center">
+      <div class="2xl:text-6xl xl:text-5xl lg:text-4xl md:text-3xl sm:text-2xl text-red-500 font-bold font-pixelify text-shadow-lg/200">
+        GAME OVER
+      </div>
+      <Button onclick={handleGoToMenu}>Return to menu</Button>
     </div>
   {/if}
 </button>
+<!--{/if}-->
+
 
 <!-- Monete -->
 <div class="fixed top-[3%] left-[1%] flex items-center space-x-7 p-2 z-40">

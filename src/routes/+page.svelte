@@ -1,6 +1,6 @@
 <script>
   import Button from "$lib/Button.svelte";
-  import { goto } from "$app/navigation"
+  import { goto } from "$app/navigation";
   import { onMount } from "svelte";
   import { cubicOut } from 'svelte/easing';
   import { fly } from 'svelte/transition';
@@ -29,18 +29,23 @@
       goto('/store');
     }, 900);
   }
-  function goToSkins() {
+  function goToInventory() {
     transitioning = true;
     setTimeout(() => {
-      goto('/skins');
+      goto('/inventory');
+    }, 900);
+  }
+  function goToGame() {
+    transitioning = true;
+    setTimeout(() => {
+      goto('/game');
     }, 900);
   }
 </script>
 
 {#if loaded}
   <div transition:fly={{ y: 50, duration: 500, easing: cubicOut }}>
-    <div class="relative overflow-hidden min-h-screen transition-transform duration-900 ease-in-out" class:translate-y-full={transitioning}>
-
+    <div class="relative overflow-hidden min-h-screen transition-discrete transition-transform duration-900 ease-in-out" class:translate-y-full={transitioning}>
       {#each clouds as cloud (cloud)}
         <img
           src="Cloud-2.png"
@@ -53,19 +58,15 @@
           "
         />
       {/each}
-
-      <!-- Overlay UI -->
       <div class="fixed top-[3%] left-[1%] flex items-center space-x-7 p-2">
         <div class="font-pixelify text-white text-3xl text-border">COINS: {$coins}</div>
         <div class="coin-animation scale-[3]"></div>
       </div>
-
       <div class="w-[50%] mx-auto flex flex-col items-center justify-center min-h-screen">
-        <h1 class="text-3xl text-border font-pixelify text-white fixed top-[5%]">Max Score: 0</h1>
+        <h1 class="text-3xl text-border font-pixelify text-white fixed top-[4%]">Max Score: 0</h1>
         <h1 class="text-8xl font-bold font-pixelify text-yellow-300 mb-[5%] text-shadow-lg/200 hover:scale-[120%] transition-transform duration-300 ease-in-out">Flappy Bird</h1>
-
-        <Button><a href="/game">Play</a></Button>
-        <Button onclick={goToSkins}>Skins</Button>
+        <Button onclick={goToGame}>Play</Button>
+        <Button onclick={goToInventory}>Inventory</Button>
         <Button onclick={goToStore}>Store</Button>
       </div>
     </div>
