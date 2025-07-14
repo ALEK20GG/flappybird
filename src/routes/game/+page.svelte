@@ -6,7 +6,7 @@
   import { cubicOut } from 'svelte/easing';
   import { fly } from 'svelte/transition';
   import Settings from '$lib/Settings.svelte';
-  import { coins } from '../../stores/game';
+  import { coins, skin_in_use, background_in_use, max_score } from '../../stores/game';
 
   let gameStarted = false;
   let gameOver = false;
@@ -14,13 +14,15 @@
   let birdVelocity = 0;
   let hitbox_shown = false;
   let show_settings = false;
+  let actual_background = $background_in_use[0];
+  let bg_counter = 0;
   const birdX = 20; // percentuale orizzontale dove si trova l'uccello
   const birdHeight = 8; // larghezza stimata dell’uccello in percentuale
 
   //suoni
-  let coin_volume = 0.3;
-  let jump_volume = 0.3;
-  let death_volume = 0.3;
+  let coin_volume = 0.1;
+  let jump_volume = 0.1;
+  let death_volume = 0.1;
 
   let container:HTMLButtonElement
   let bird:HTMLDivElement
@@ -80,6 +82,14 @@
           const bottom = 100 - top - 40;
           const hasCoin = Math.random() < 1 / 3; // 33.3%
           score++;
+          if(bg_counter > $background_in_use.length)
+          {
+            bg_counter=0;
+          }
+          if(score%20==0)
+          {
+            bg_counter++;
+          }
           return { x: lastPipeX + spacing, top, bottom, hasCoin, coin_collected: false };
         }
         return { ...pipe, x: newX };
@@ -160,6 +170,11 @@
   }
 
   function endGame() {
+    bg_counter=0;
+    if(score > $max_score)
+    {
+      max_score.set(score);
+    }
     clearInterval(interval);
     gameOver = true;
     playEffect('death')
@@ -184,10 +199,10 @@
 </script>
 
 <!--{#if loaded == true}-->
-
 <button
   bind:this={container}
-  class="w-full h-full relative hover:cursor-pointer bg-sky-300 overflow-hidden" 
+  class="w-full h-full relative hover:cursor-pointer overflow-hidden"
+  style="background-image: url(/bg{$background_in_use[bg_counter]}); background-size: cover"
   on:click={() => {
     if (!show_settings) flap();
   }}
@@ -201,7 +216,7 @@
   >
     <img
       alt="flappy bird"
-      src="/birds/flappy.png"
+      src="/birds{$skin_in_use}"
       class="w-full h-full object-contain"
     />
   </div>

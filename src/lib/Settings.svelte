@@ -1,7 +1,7 @@
 <script>
-    export let jump_volume = 0.3;
-    export let death_volume = 0.3;
-    export let coin_volume = 0.3;
+    export let jump_volume = 0.1;
+    export let death_volume = 0.1;
+    export let coin_volume = 0.1;
     export let show_settings = true;
     export let hitbox_shown = false;
     function go_back(){
