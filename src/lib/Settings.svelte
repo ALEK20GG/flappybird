@@ -1,9 +1,16 @@
 <script>
+    import { coins, max_score, skin_in_use, background_in_use, settings } from '../stores/localstorage';
     export let jump_volume = 0.3;
     export let death_volume = 0.3;
     export let coin_volume = 0.3;
     export let show_settings = true;
     export let hitbox_shown = false;
+    settings.set({
+      jump_volume: jump_volume, 
+      death_volume: death_volume, 
+      coins_volume: coin_volume, 
+      hitboxshown: hitbox_shown
+    });
     function go_back(){
       show_settings = false;
     }

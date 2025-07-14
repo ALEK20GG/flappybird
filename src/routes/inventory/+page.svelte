@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { cubicOut } from 'svelte/easing';
   import { fly } from 'svelte/transition';
-  import { coins } from '../../stores/game';
+  import { coins } from '../../stores/localstorage';
 
   let loaded = false;
 

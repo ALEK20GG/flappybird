@@ -4,7 +4,8 @@
   import { onMount } from "svelte";
   import { cubicOut } from 'svelte/easing';
   import { fly } from 'svelte/transition';
-  import { coins } from '../stores/game'
+  import { coins, max_score, skin_in_use, background_in_use, settings } from '../stores/localstorage';
+
 
   // Numero di nuvole
   const cloudCount = (Math.random() * 10)+1;
@@ -63,7 +64,7 @@
         <div class="coin-animation scale-[3]"></div>
       </div>
       <div class="w-[50%] mx-auto flex flex-col items-center justify-center min-h-screen">
-        <h1 class="text-3xl text-border font-pixelify text-white fixed top-[4%]">Max Score: 0</h1>
+        <h1 class="text-3xl text-border font-pixelify text-white fixed top-[4%]">Max Score: {$max_score}</h1>
         <h1 class="text-8xl font-bold font-pixelify text-yellow-300 mb-[5%] text-shadow-lg/200 hover:scale-[120%] transition-transform duration-300 ease-in-out">Flappy Bird</h1>
         <Button onclick={goToGame}>Play</Button>
         <Button onclick={goToInventory}>Inventory</Button>
