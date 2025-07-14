@@ -5,13 +5,22 @@
   import Tubo from '$lib/Tubo.svelte';
   import { cubicOut } from 'svelte/easing';
   import { fly } from 'svelte/transition';
+  import Settings from '$lib/Settings.svelte';
+  import { coins } from '../../stores/game';
 
   let gameStarted = false;
   let gameOver = false;
   let birdY = 50; // centro verticale
   let birdVelocity = 0;
+  let hitbox_shown = false;
+  let show_settings = false;
   const birdX = 20; // percentuale orizzontale dove si trova l'uccello
   const birdHeight = 8; // larghezza stimata dell’uccello in percentuale
+
+  //suoni
+  let coin_volume = 0.3;
+  let jump_volume = 0.3;
+  let death_volume = 0.3;
 
   let container:HTMLButtonElement
   let bird:HTMLDivElement
@@ -21,7 +30,7 @@
   let score = 0;
 
   // Ogni tubo avrà: x (posizione), top e bottom (altezza %)
-  type Pipe = { x: number; top: number; bottom: number };
+  type Pipe = { x: number; top: number; bottom: number; hasCoin: boolean, coin_collected: boolean };
   let pipes: Pipe[] = [];
   let interval: any;
 
@@ -52,7 +61,9 @@
     for (let i = 0; i < 3; i++) {
       const top = Math.floor(Math.random() * 40) + 10;
       const bottom = 100 - top - 40; // gap 20%
-      pipes.push({ x: 100 + i * 41, top, bottom });
+      const hasCoin = Math.random() < 1 / 3; // 33.3%
+
+      pipes.push({ x: 100 + i * 41, top, bottom, hasCoin, coin_collected: false });
     }
 
     interval = setInterval(() => {
@@ -67,8 +78,9 @@
           const spacing = 50; // distanza orizzontale tra i tubi in percentuale
           const top = Math.floor(Math.random() * 40) + 10;
           const bottom = 100 - top - 40;
+          const hasCoin = Math.random() < 1 / 3; // 33.3%
           score++;
-          return { x: lastPipeX + spacing, top, bottom };
+          return { x: lastPipeX + spacing, top, bottom, hasCoin, coin_collected: false };
         }
         return { ...pipe, x: newX };
       });
@@ -93,6 +105,19 @@
           endGame();
         }
       }
+      // controllo raccolta moneta
+      if (
+        pipe.hasCoin &&
+        !pipe.coin_collected &&
+        overlapsHorizontally &&
+        birdY + birdHeight >= pipe.top + 15 &&
+        birdY <= pipe.top + 25 // range verticale del centro del gap
+      ) {
+        pipe.coin_collected = true;
+        coins.update(n => n +1);
+        playEffect('coin');
+      }
+
     }
 
 
@@ -103,25 +128,52 @@
     }, 30);
   }
 
+  function playEffect(type: 'jump' | 'coin' | 'death') {
+    let src = '';
+    let volume = 0.3;
+
+    if (type === 'jump') {
+      src = '/audio/jump.wav';
+      volume = jump_volume;
+    } else if (type === 'coin') {
+      src = '/audio/coin.wav';
+      volume = coin_volume;
+    } else if (type === 'death') {
+      src = '/audio/death.wav';
+      volume = death_volume;
+    }
+
+    const sound = new Audio(src);
+    sound.volume = volume;
+    sound.play();
+  }
+
+
   function flap() {
     if (!gameStarted) {
       startGame();
     }
     if (!gameOver) {
       birdVelocity = jumpForce;
+      playEffect('jump');
     }
   }
 
   function endGame() {
     clearInterval(interval);
     gameOver = true;
+    playEffect('death')
     gameStarted = false;
+  }
+
+    function go_to_settings() {
+    show_settings = true;
   }
 
   onMount(() => {
   loaded = true;
   const handleKey = (e: KeyboardEvent) => {
-    if (e.code === 'Space') {
+    if (e.code === 'Space' && !show_settings) {
       flap();
     }
   };
@@ -131,32 +183,66 @@
 
 </script>
 
-{#if loaded == true}
-      <button bind:this={container} class="w-full h-full relative hover:cursor-pointer overflow-hidden min-h-screen transition-discrete transition-transform duration-900 ease-in-out" onclick={flap} transition:fly={{ y: 50, duration: 500, easing: cubicOut }} class:translate-y-full={transitioning}>
-        <div class="absolute top-[1%] bottom-[5%] text-[100%] text-white text-shadow-lg/200 font-bold left-[49%] ">Score: {score}</div>
-        <div
-          bind:this={bird}
-          class="absolute transition-all duration-[30ms] w-fit"
-          style="top: {birdY}%; left: {birdX}%; height: {birdHeight}%"
-        >
-          <img
-            alt="flappy bird"
-            src="/birds/flappy.png"
-            class="w-full h-full object-contain"
-          />
-        </div>
+<!--{#if loaded == true}-->
 
-        {#each pipes as pipe (pipe.x)}
-          <Tubo {pipe} />
-        {/each}
-        {#if gameOver}
-          <div class="w-[70%] h-[30%] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center space-y-8 text-center">
-            <div class="2xl:text-6xl xl:text-5xl lg:text-4xl text-lg text-red-500 font-bold font-pixelify text-shadow-lg/200">
-              GAME OVER
-            </div>
-            <Button onclick={handleGoToMenu}>Return to menu</Button>
-          </div>
-        {/if}
-      </button>
+<button
+  bind:this={container}
+  class="w-full h-full relative hover:cursor-pointer bg-sky-300 overflow-hidden" 
+  on:click={() => {
+    if (!show_settings) flap();
+  }}
+  
+>
+  <!-- Uccello -->
+  <div
+    bind:this={bird}
+    class="absolute transition-all duration-[30ms] w-fit {hitbox_shown ? 'bg-red-500' : ''}"
+    style="top: {birdY}%; left: {birdX}%; height: {birdHeight}%"
+  >
+    <img
+      alt="flappy bird"
+      src="/birds/flappy.png"
+      class="w-full h-full object-contain"
+    />
+  </div>
+
+  <!-- Tubi -->
+  {#each pipes as pipe (pipe.x)}
+    <Tubo {pipe} hitboxShown={hitbox_shown} rnd={pipe.hasCoin} coin_collected={pipe.coin_collected}/>
+  {/each}
+
+  <!-- Punteggio -->
+  <div class="absolute top-[1%] bottom-[5%] text-[100%] text-white text-shadow-lg/200 font-bold left-[49%]">
+    Score: {score}
+  </div>
+
+  <!-- Game Over -->
+  {#if gameOver}
+    <div class="w-[70%] h-[30%] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center space-y-8 text-center">
+      <div class="2xl:text-6xl xl:text-5xl lg:text-4xl md:text-3xl sm:text-2xl text-red-500 font-bold font-pixelify text-shadow-lg/200">
+        GAME OVER
+      </div>
+      <Button onclick={handleGoToMenu}>Return to menu</Button>
+    </div>
+  {/if}
+</button>
+<!--{/if}-->
+
+
+<!-- Monete -->
+<div class="fixed top-[3%] left-[1%] flex items-center space-x-7 p-2 z-40">
+  <div class="font-pixelify text-white text-3xl text-border">COINS: {$coins}</div>
+  <div class="coin-animation scale-[3]"></div>
+</div>
+
+<!-- Bottone impostazioni con z-50 per renderlo cliccabile -->
+<div class="fixed top-[5%] right-[2%] flex items-center space-x-7 p-2 h-[5%] w-[5%] z-50">
+  <button on:click={go_to_settings} class="bg-white rounded-full shadow-md p-1 hover:scale-105 transition">
+    <img src="/img/impostazioni.png" alt="impostazioni" class="w-full h-full" />
+  </button>
+</div>
+
+<!-- Menu impostazioni -->
+{#if show_settings}
+  <Settings bind:coin_volume bind:jump_volume bind:death_volume bind:show_settings bind:hitbox_shown/>
 {/if}
-
