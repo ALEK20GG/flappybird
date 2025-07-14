@@ -3,8 +3,8 @@
   import { onMount } from 'svelte';
   import { cubicOut } from 'svelte/easing';
   import { fly } from 'svelte/transition';
+  import { coins } from '../../stores/localstorage';
   import { Splide, SplideSlide } from '@splidejs/svelte-splide';
-  import { coins } from '../../stores/game';
   import '@splidejs/splide/css';
   import Button from '$lib/Button.svelte';
 

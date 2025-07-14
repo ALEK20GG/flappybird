@@ -6,7 +6,7 @@
   import { cubicOut } from 'svelte/easing';
   import { fly } from 'svelte/transition';
   import Settings from '$lib/Settings.svelte';
-  import { coins, skin_in_use, background_in_use, max_score } from '../../stores/game';
+  import { coins, max_score, skin_in_use, background_in_use, settings } from '../../stores/localstorage';
 
   let gameStarted = false;
   let gameOver = false;

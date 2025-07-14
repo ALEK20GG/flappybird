@@ -4,7 +4,7 @@
   import { cubicOut } from 'svelte/easing';
   import { fly } from 'svelte/transition';
   import { Splide, SplideSlide } from '@splidejs/svelte-splide';
-  import { coins } from '../../stores/game';
+  import { coins } from '../../stores/localstorage';
   import '@splidejs/splide/css';
   import Button from '$lib/Button.svelte';
 
