@@ -46,6 +46,8 @@
 
   onMount(() => {
     loaded = true;
+    console.log($owned_backgrounds.city[0])
+    console.log(bgs[0].img[0])
   });
 
   function buyBird(boughtSkin: string, skinPrice: number) {
@@ -77,7 +79,6 @@
       });
       coins.update(coin => coin - bgPrice)
     }
-    
   }
 
 
@@ -103,11 +104,15 @@
             <div class="relative group w-full h-full">
               <img class="group-hover:scale-[120%] transition-transform duration-300 ease-in-out" src={bird.skin} alt=""/>
               <div class="absolute inset-0 bg-black/50 flex flex-col justify-center items-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl">
-                <div class="flex flex-row items-center space-x-5">
+                <div role="group" class="flex flex-row items-center space-x-5">
                   <div class="text-white text-2xl font-extralight font-pixelify">{bird.price}</div>
                   <div class="coin-animation scale-[2]"></div>
                 </div>
-                <button onclick={() => buyBird(bird.skin, bird.price)} aria-label="Buy button" class ="w-[50%] h-[20%] mt-[4%] bg-yellow-400 text-white text-border z-50 text-xl font-semibold font-pixelify rounded-lg shadow-md border-4 border-white transition-all duration-300 ease-in-out hover:shadow-2xl hover:scale-[120%] hover:bg-yellow-500 active:scale-95">Buy</button>
+                {#if !$owned_skins.includes(bird.skin.replace("/birds/", ""))}
+                  <button onclick={() => buyBird(bird.skin, bird.price)} aria-label="Buy button" class ="w-[50%] h-[20%] mt-[4%] bg-yellow-400 text-white text-border z-50 text-xl font-semibold font-pixelify rounded-lg shadow-md border-4 border-white transition-all duration-300 ease-in-out hover:shadow-2xl hover:scale-[120%] hover:bg-yellow-500 active:scale-95">Buy</button>
+                  {:else}
+                  <button aria-label="Owned button" class ="w-[50%] h-[20%] mt-[4%] bg-yellow-400 text-white text-border z-50 text-xl font-semibold font-pixelify rounded-lg shadow-md border-4 border-white transition-all duration-300 ease-in-out hover:shadow-2xl hover:scale-[120%] hover:bg-yellow-500 active:scale-95">Owned</button>
+                {/if}
               </div>
             </div>
           </SplideSlide>
@@ -126,9 +131,13 @@
                   <div class="text-white text-2xl font-bold font-pixelify">{bg.price}</div>
                   <div class="coin-animation scale-[2]"></div>
                 </div>
-                <button onclick={() => buyBackground(bg.packPath, bg.price, bg.img, bg.category)} aria-label="Buy button" class ="w-[50%] h-[35%] mt-[4%] bg-yellow-400 text-white text-border z-50 text-xl font-semibold font-pixelify rounded-lg shadow-md border-4 border-white transition-all duration-300 ease-in-out hover:shadow-2xl hover:scale-[120%] hover:bg-yellow-500 active:scale-95">Buy</button>
+                  {#if !$owned_backgrounds[bg.category as keyof Backgrounds].includes(bg.img[0])}
+                    <button onclick={() => buyBackground(bg.packPath, bg.price, bg.img, bg.category)} class="w-[50%] h-[35%] mt-[4%] bg-yellow-400 text-white text-border z-50 text-xl font-semibold font-pixelify rounded-lg shadow-md border-4 border-white transition-all duration-300 ease-in-out hover:shadow-2xl hover:scale-[120%] hover:bg-yellow-500 active:scale-95">Buy</button>
+                    {:else}
+                      <button aria-label="Owned button" class ="w-[50%] h-[35%] mt-[4%] bg-yellow-400 text-white text-border z-50 text-xl font-semibold font-pixelify rounded-lg shadow-md border-4 border-white transition-all duration-300 ease-in-out hover:shadow-2xl hover:scale-[120%] hover:bg-yellow-500 active:scale-95">Owned</button>
+                  {/if}
+                </div>
               </div>
-            </div>
           </SplideSlide>
         {/each}
       </Splide>

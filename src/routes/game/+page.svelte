@@ -42,7 +42,7 @@
     transitioning = true;
     setTimeout(() => {
       goto('/');
-    }, 900);
+    }, 500);
   }
 
   function handleGoToMenu(event: MouseEvent) {
@@ -201,7 +201,7 @@
 <!--{#if loaded == true}-->
 <button
   bind:this={container}
-  class="w-full h-full relative hover:cursor-pointer overflow-hidden min-h-screen transition-transform duration-900 ease-in-out"
+  class="w-full h-full relative hover:cursor-pointer overflow-hidden min-h-screen transition-transform duration-500 ease-in-out"
   on:click={() => {
     if (!show_settings) flap();
   }}
