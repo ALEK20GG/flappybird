@@ -44,7 +44,7 @@
 </script>
 
 {#if loaded}
-  <div transition:fly={{ y: 50, duration: 500, easing: cubicOut }}>
+  <div transition:fly={{ y: 50, duration: 1500, easing: cubicOut }}>
     <div class="relative overflow-hidden min-h-screen transition-discrete transition-transform duration-900 ease-in-out" class:translate-y-full={transitioning}>
       {#each clouds as cloud (cloud)}
         <img
@@ -68,6 +68,7 @@
         <Button onclick={goToGame}>Play</Button>
         <Button onclick={goToInventory}>Inventory</Button>
         <Button onclick={goToStore}>Store</Button>
+        <h1 class="text-3xl text-border font-pixelify text-white fixed bottom-[4%]"><a target="_blank" href="https://www.google.com/imgres?q=black%20gay%20men%20kissing%20meme&imgurl=https%3A%2F%2Fi.pinimg.com%2F564x%2F48%2Fc7%2Fa7%2F48c7a7695d80385994eba0f3192d27af.jpg&imgrefurl=https%3A%2F%2Fin.pinterest.com%2Fpin%2F417708934208621159%2F&docid=xlpwGTcqROPEiM&tbnid=FBQlq2JDvFfuqM&vet=12ahUKEwjqycOci8GOAxU_hv0HHfbPN34QM3oECDoQAA..i&w=560&h=631&hcb=2&ved=2ahUKEwjqycOci8GOAxU_hv0HHfbPN34QM3oECDoQAA">By Andres & Alessandro</a></h1>
       </div>
     </div>
   </div>  

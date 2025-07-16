@@ -25,8 +25,8 @@ export const background_in_use = localStorageStore<string[]>("background_in_use"
     "standard/tsrh.png"
 ])
 export const coins = localStorageStore<number>("coins", 0);
-export const owned_skins = localStorageStore<string[]>("owned_skins", ["/flappy.png"]);
-type Backgrounds = {
+export const owned_skins = localStorageStore<string[]>("owned_skins", ["flappy.png"]);
+export type Backgrounds = {
     standard: string[];
     city: string[];
     clouds: string[];
