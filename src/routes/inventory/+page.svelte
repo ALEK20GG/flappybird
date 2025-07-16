@@ -3,11 +3,16 @@
   import { onMount } from 'svelte';
   import { cubicOut } from 'svelte/easing';
   import { fly } from 'svelte/transition';
-  import { coins, skin_in_use, background_in_use, owned_skins/*, owned_backgrounds*/ } from '../../stores/localstorage';
+  import { coins, skin_in_use, background_in_use, owned_skins, owned_backgrounds } from '../../stores/localstorage';
   import { Splide, SplideSlide } from '@splidejs/svelte-splide';
   import '@splidejs/splide/css';
   import Button from '$lib/Button.svelte';
+
   let loaded = false;
+  let i=0;
+
+  const categories = ['standard', 'city', 'clouds', 'nature', 'night'] as const;
+  type Category = typeof categories[number];
 
   const splideOptions = {
     type: 'loop',
@@ -35,19 +40,17 @@
     skin_in_use.set(equippedSkin.replace("/birds/", ""))
   }
 
-  /*function equipBg(equippedBg: Array<string>) {
+  function equipBg(equippedBg: Array<string>, cat: string) {
     let i = 0;
     equippedBg.forEach(element => {
-      element = element.replace(`/bg/`, "");
+      element = element.replace(/bg/, "");
       equippedBg[i] = element;
       console.log(element)
       i++;
     });
     console.log(equippedBg[1]);
     background_in_use.set(equippedBg);
-  }*/
-
-
+  }
 
 </script>
 
@@ -80,16 +83,25 @@
         Backgrounds
       </h2>
       <Splide aria-label="Backgrounds" class="w-[40%] h-[40%]" options={splideOptions}>
-        {#each bgs as bg}
-          <SplideSlide>
-            <div class="relative group w-full h-full">
-              <img class="group-hover:scale-[120%] transition-transform duration-300 ease-in-out" src={bg.img[0]} alt=""/>
-              <div class="absolute inset-0 flex flex-col justify-center items-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"> 
-                <button aria-label="Equip button" class ="w-[50%] h-[35%] bg-yellow-400 text-white text-border z-50 text-xl font-semibold font-pixelify rounded-lg shadow-md border-4 border-white transition-all duration-300 ease-in-out hover:shadow-2xl hover:scale-[120%] hover:bg-yellow-500 active:scale-95">Equip</button>
+        {#each categories as cat}
+          {#if $owned_backgrounds[cat]?.length}
+            <SplideSlide>
+              <div class="relative group w-full h-full">
+                <img src={`/bg/${($owned_backgrounds[cat][0]).replace("/bg/", "")}`} alt="" class="group-hover:scale-[120%] transition-transform duration-300 ease-in-out" />
+                <div class="absolute inset-0 flex flex-col justify-center items-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"> 
+                  <button 
+                    onclick={() => equipBg($owned_backgrounds[cat], cat)} 
+                    class="w-[50%] h-[35%] bg-yellow-400 text-white text-border z-50 text-xl font-semibold font-pixelify rounded-lg shadow-md border-4 border-white transition-all duration-300 ease-in-out hover:shadow-2xl hover:scale-[120%] hover:bg-yellow-500 active:scale-95"
+                  >
+                    Equip
+                  </button>
+                </div>
               </div>
-            </div>
-          </SplideSlide>
+            </SplideSlide>
+          {/if}
         {/each}
+
+        
       </Splide>
       <div class="flex w-[50%] h-[50%] mt-[2%] justify-center items-center">
         <Button><a href="/">Go back</a></Button>

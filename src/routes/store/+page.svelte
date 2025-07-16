@@ -63,16 +63,25 @@
 
   async function buyBackground(boughtBg: string, bgPrice: number, bgPaths: Array<string>, cat: string) {
     const category = cat as keyof Backgrounds;
-    owned_backgrounds.update(bg => { 
-      const merged = [...bg[category], ...bgPaths];
-      // Rimuovi duplicati (opzionale ma consigliato)
-      const unique = Array.from(new Set(merged));
-      return {
-        ...bg,
-        [category]: unique
-      };
-    });
+    if ($coins < bgPrice) {
+      alert("Not enough coins to buy this skin!");
+    }
+    else
+    {
+      owned_backgrounds.update(bg => { 
+        const merged = [...bg[category], ...bgPaths];
+        // Rimuovi duplicati (opzionale ma consigliato)
+        const unique = Array.from(new Set(merged));
+        return {
+          ...bg,
+          [category]: unique
+        };
+      });
+      coins.update(coin => coin - bgPrice)
+    }
   }
+
+
 
 </script>
 
